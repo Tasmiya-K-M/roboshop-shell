@@ -30,11 +30,11 @@ go get &>> /tmp/roboshop.log
 go build &>> /tmp/roboshop.log
 
 #create the service file
-echo -e "\e[33mcreate the service file\e[0m"
+echo -e "\e[33mcreate the dispatch service file\e[0m"
 cp /home/centos/learn-shell/dispatch.service /etc/systemd/system/dispatch.service &>> /tmp/roboshop.log
 
 #load, enable and restart service
-echo -e "\e[33mload, enable and restart service\e[0m"
+echo -e "\e[33mload, enable and restart dispatch service\e[0m"
 systemctl daemon-reload
 systemctl enable dispatch &>> /tmp/roboshop.log
 systemctl restart dispatch

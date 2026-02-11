@@ -1,5 +1,3 @@
-#cart service
-#hiiiiiiii
 echo -e "\e[33msetting the hostname\e[0m"
 hostnamectl set-hostname cart
 
@@ -41,13 +39,13 @@ echo -e "\e[33mcreated cart service file\e[0m"
 cp /home/centos/learn-shell/cart.service /etc/systemd/system/
 
 # load the service
-echo -e "\e[33mload the service\e[0m"
+echo -e "\e[33mload the cart service\e[0m"
 systemctl daemon-reload
 
 # enable the service
-echo -e "\e[33menable the service\e[0m"
+echo -e "\e[33menable the cart service\e[0m"
 systemctl enable cart &>> /tmp/roboshop.log
 
 # restart the service
-echo -e "\e[33mrestart the service\e[0m"
+echo -e "\e[33mrestart the cart service\e[0m"
 systemctl restart cart
