@@ -1,5 +1,5 @@
 #cart service
-#hii
+#hiiiiiiii
 echo -e "\e[33msetting the hostname\e[0m"
 hostnamectl set-hostname cart
 
