@@ -15,7 +15,7 @@ dnf install nodejs -y &>> /tmp/roboshop.log
 
 #Add application User
 echo -e "\e[33mAdded the app user\e[0m"
-useradd roboshop 
+useradd roboshop &>> /tmp/roboshop.log
 
 #setup an app directory.
 echo -e "\e[33mSetup app directory\e[0m"
@@ -38,7 +38,7 @@ npm install  &>> /tmp/roboshop.log
 
 #Setup SystemD Catalogue Service
 echo -e "\e[33mSetting up ${component} Service\e[0m"
-cp /home/centos/learn-shell/${component}.service /etc/systemd/system/
+cp /home/centos/roboshop-shell/${component}.service /etc/systemd/system/
 
 #Load the service.
 echo -e "\e[33mLoad the ${component} service\e[0m"
@@ -51,7 +51,7 @@ systemctl restart ${component}
 
 #setup MongoDB-Client repo
 echo -e "\e[33msetup mongodb-client repo\e[0m"
-cp /home/centos/learn-shell/mongo-client.repo /etc/yum.repos.d/
+cp /home/centos/roboshop-shell/mongo-client.repo /etc/yum.repos.d/
 
 #Installing mongodb-client
 echo -e "\e[33mInstalling mongodb-client\e[0m"
