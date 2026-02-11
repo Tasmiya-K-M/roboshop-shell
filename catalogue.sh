@@ -1,64 +1,68 @@
 component=catalogue
+color="\e[33m"
+nocolor="\e[0m"
+log_file="/tmp/roboshop.log"
 
-echo -e "\e[33msetting the hostname\e[0m"
+
+echo -e "${color}setting the hostname${nocolor}"
 hostnamectl set-hostname ${component}
 
-echo -e "\e[33mDisabling the default nodejs version\e[0m"
-dnf module disable nodejs -y &>> /tmp/roboshop.log
+echo -e "${color}Disabling the default nodejs version${nocolor}"
+dnf module disable nodejs -y &>> ${log_file}
 
-echo -e "\e[33mEnabling the nodejs 18\e[0m"
-dnf module enable nodejs:18 -y &>> /tmp/roboshop.log
+echo -e "${color}Enabling the nodejs 18${nocolor}"
+dnf module enable nodejs:18 -y &>> ${log_file}
 
 #Install NodeJS
-echo -e "\e[33mInstalling the nodejs 18\e[0m"
-dnf install nodejs -y &>> /tmp/roboshop.log
+echo -e "${color}Installing the nodejs 18${nocolor}"
+dnf install nodejs -y &>> ${log_file}
 
 #Add application User
-echo -e "\e[33mAdded the app user\e[0m"
-useradd roboshop &>> /tmp/roboshop.log
+echo -e "${color}Added the app user${nocolor}"
+useradd roboshop &>> ${log_file}
 
 #setup an app directory.
-echo -e "\e[33mSetup app directory\e[0m"
+echo -e "${color}Setup app directory${nocolor}"
 rm -rf /app
 mkdir /app 
 
 
 #Download the application code 
-echo -e "\e[33mDownload app code\e[0m"
-curl -o /tmp/${component}.zip https://roboshop-artifacts.s3.amazonaws.com/${component}.zip &>> /tmp/roboshop.log
+echo -e "${color}Download app code${nocolor}"
+curl -o /tmp/${component}.zip https://roboshop-artifacts.s3.amazonaws.com/${component}.zip &>> ${log_file}
 
 #unzip the file
-echo -e "\e[33mUnzip the file\e[0m"
+echo -e "${color}Unzip the file${nocolor}"
 cd /app 
-unzip /tmp/${component}.zip &>> /tmp/roboshop.log
+unzip /tmp/${component}.zip &>> ${log_file}
 
 #download the dependencies.
-echo -e "\e[33mDownloading dependencies\e[0m"
-npm install  &>> /tmp/roboshop.log
+echo -e "${color}Downloading dependencies${nocolor}"
+npm install  &>> ${log_file}
 
 #Setup SystemD Catalogue Service
-echo -e "\e[33mSetting up ${component} Service\e[0m"
+echo -e "${color}Setting up ${component} Service${nocolor}"
 cp /home/centos/roboshop-shell/${component}.service /etc/systemd/system/
 
 #Load the service.
-echo -e "\e[33mLoad the ${component} service\e[0m"
+echo -e "${color}Load the ${component} service${nocolor}"
 systemctl daemon-reload
 
 #enable and restart the service
-echo -e "\e[33mEnable and restart catalogue service\e[0m"
-systemctl enable ${component} &>> /tmp/roboshop.log
+echo -e "${color}Enable and restart catalogue service${nocolor}"
+systemctl enable ${component} &>> ${log_file}
 systemctl restart ${component}
 
 #setup MongoDB-Client repo
-echo -e "\e[33msetup mongodb-client repo\e[0m"
+echo -e "${color}setup mongodb-client repo${nocolor}"
 cp /home/centos/roboshop-shell/mongo-client.repo /etc/yum.repos.d/
 
 #Installing mongodb-client
-echo -e "\e[33mInstalling mongodb-client\e[0m"
-dnf install mongodb-org-shell -y &>> /tmp/roboshop.log
+echo -e "${color}Installing mongodb-client${nocolor}"
+dnf install mongodb-org-shell -y &>> ${log_file}
 
 #Load the data into mongodb using mongo-client
-echo -e "\e[33mLoad the data into mongodb using mongo-client\e[0m"
-mongo --host mongodb-dev.devopspro789.online </app/schema/${component}.js &>> /tmp/roboshop.log
+echo -e "${color}Load the data into mongodb using mongo-client${nocolor}"
+mongo --host mongodb-dev.devopspro789.online </app/schema/${component}.js &>> ${log_file}
 
 
