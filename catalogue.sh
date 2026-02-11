@@ -1,8 +1,5 @@
+source common.sh
 component=catalogue
-color="\e[36m"
-nocolor="\e[0m"
-log_file="/tmp/roboshop.log"
-
 
 echo -e "${color}setting the hostname${nocolor}"
 hostnamectl set-hostname ${component}
@@ -23,8 +20,8 @@ useradd roboshop &>> ${log_file}
 
 #setup an app directory.
 echo -e "${color}Setup app directory${nocolor}"
-rm -rf /app
-mkdir /app 
+rm -rf ${app_path}
+mkdir ${app_path} 
 
 
 #Download the application code 
@@ -33,7 +30,7 @@ curl -o /tmp/${component}.zip https://roboshop-artifacts.s3.amazonaws.com/${comp
 
 #unzip the file
 echo -e "${color}Unzip the file${nocolor}"
-cd /app 
+cd ${app_path} 
 unzip /tmp/${component}.zip &>> ${log_file}
 
 #download the dependencies.
@@ -63,6 +60,6 @@ dnf install mongodb-org-shell -y &>> ${log_file}
 
 #Load the data into mongodb using mongo-client
 echo -e "${color}Load the data into mongodb using mongodb-client${nocolor}"
-mongo --host mongodb-dev.devopspro789.online </app/schema/${component}.js &>> ${log_file}
+mongo --host mongodb-dev.devopspro789.online <${app_path}/schema/${component}.js &>> ${log_file}
 
 
