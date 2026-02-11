@@ -1,51 +1,54 @@
-echo -e "\e[33msetting the hostname\e[0m"
-hostnamectl set-hostname cart
+source common.sh
+component=cart
+
+echo -e "${color}setting the hostname${nocolor}"
+hostnamectl set-hostname ${component}
 
 # disable the default nodejs
-echo -e "\e[33mdisable the default nodejs\e[0m"
-dnf module disable nodejs -y &>> /tmp/roboshop.log
+echo -e "${color}disable the default nodejs${nocolor}"
+dnf module disable nodejs -y &>> ${log_file}
 
 # enable the nodejs 18
-echo -e "\e[33menable the nodejs 18\e[0m"
-dnf module enable nodejs:18 -y &>> /tmp/roboshop.log
+echo -e "${color}enable the nodejs 18${nocolor}"
+dnf module enable nodejs:18 -y &>> ${log_file}
 
 # install nodejs
-echo -e "\e[33minstall nodejs\e[0m"
-dnf install nodejs -y &>> /tmp/roboshop.log
+echo -e "${color}install nodejs${nocolor}"
+dnf install nodejs -y &>> ${log_file}
 
 # create the user
-echo -e "\e[33mcreate the user\e[0m"
-useradd roboshop &>> /tmp/roboshop.log
+echo -e "${color}create the user${nocolor}"
+useradd roboshop &>> ${log_file}
 
 # create the app dir
-echo -e "\e[33mcreate the app dir\e[0m"
-mkdir /app 
+echo -e "${color}create the app dir${nocolor}"
+mkdir ${app_path} 
 
 # download the app code
-echo -e "\e[33mdownload the app code\e[0m"
-curl -L -o /tmp/cart.zip https://roboshop-artifacts.s3.amazonaws.com/cart.zip  &>> /tmp/roboshop.log
+echo -e "${color}download the app code${nocolor}"
+curl -L -o /tmp/${component}.zip https://roboshop-artifacts.s3.amazonaws.com/${component}.zip  &>> ${log_file}
 
 # unzip the app code in app folder
-echo -e "\e[33munzip the app code in app folder\e[0m"
-cd /app 
-unzip /tmp/cart.zip &>> /tmp/roboshop.log
+echo -e "${color}unzip the app code in app folder${nocolor}"
+cd ${app_path} 
+unzip /tmp/${component}.zip &>> ${log_file}
 
 # install the dependencies
-echo -e "\e[33minstall the dependencies\e[0m"
-npm install &>> /tmp/roboshop.log
+echo -e "${color}install the dependencies${nocolor}"
+npm install &>> ${log_file}
 
 # created cart service file
-echo -e "\e[33mcreated cart service file\e[0m"
-cp /home/centos/learn-shell/cart.service /etc/systemd/system/
+echo -e "${color}created ${component} service file${nocolor}"
+cp /home/centos/roboshop-shell/${component}.service /etc/systemd/system/
 
 # load the service
-echo -e "\e[33mload the cart service\e[0m"
+echo -e "${color}load the ${component} service${nocolor}"
 systemctl daemon-reload
 
 # enable the service
-echo -e "\e[33menable the cart service\e[0m"
-systemctl enable cart &>> /tmp/roboshop.log
+echo -e "${color}enable the ${component} service${nocolor}"
+systemctl enable ${component} &>> ${log_file}
 
 # restart the service
-echo -e "\e[33mrestart the cart service\e[0m"
-systemctl restart cart
+echo -e "${color}restart the ${component} service${nocolor}"
+systemctl restart ${component}
