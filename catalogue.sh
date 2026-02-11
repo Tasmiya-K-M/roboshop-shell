@@ -1,5 +1,5 @@
 component=catalogue
-color="\e[33m"
+color="\e[36m"
 nocolor="\e[0m"
 log_file="/tmp/roboshop.log"
 
@@ -62,7 +62,7 @@ echo -e "${color}Installing mongodb-client${nocolor}"
 dnf install mongodb-org-shell -y &>> ${log_file}
 
 #Load the data into mongodb using mongo-client
-echo -e "${color}Load the data into mongodb using mongo-client${nocolor}"
+echo -e "${color}Load the data into mongodb using mongodb-client${nocolor}"
 mongo --host mongodb-dev.devopspro789.online </app/schema/${component}.js &>> ${log_file}
 
 
