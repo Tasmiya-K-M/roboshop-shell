@@ -1,5 +1,5 @@
 source common.sh
-component=shipping
+component=user
 
 nodejs
 mongodb-client-setup
