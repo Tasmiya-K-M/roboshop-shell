@@ -2,4 +2,4 @@ source common.sh
 component=user
 
 nodejs
-mysql-client
+mongodb-client-setup

@@ -188,7 +188,7 @@ mysql-client() {
 
     #load the data
     echo -e "${color}load the data${nocolor}"
-    mysql -h mysql-dev.devopspro789.online -uroot -pRoboShop@1 < /app/schema/${component}.sql &>> ${log_file}
+    mysql -h mysql-dev.devopspro789.online -uroot -pRoboShop@1 < ${app_path}/schema/${component}.sql &>> ${log_file}
 
 }
 
