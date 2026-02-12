@@ -22,6 +22,7 @@ useradd roboshop &>> ${log_file}
 
 # create the app dir
 echo -e "${color}create the app dir${nocolor}"
+rm -rf ${app_path}
 mkdir ${app_path} 
 
 # download the app code
