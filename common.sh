@@ -3,10 +3,40 @@ nocolor="\e[0m"
 log_file="/tmp/roboshop.log"
 app_path="/app"
 
-nodejs() {
+app_presetup() {
     echo -e "${color}setting the hostname${nocolor}"
     hostnamectl set-hostname ${component}
 
+    #Add application User
+    echo -e "${color}Added the app user${nocolor}"
+    useradd roboshop &>> ${log_file}
+
+    #Download the application code 
+    echo -e "${color}Download app code${nocolor}"
+    curl -o /tmp/${component}.zip https://roboshop-artifacts.s3.amazonaws.com/${component}.zip &>> ${log_file}
+
+    #unzip the file
+    echo -e "${color}Unzip the file${nocolor}"
+    cd ${app_path} 
+    unzip /tmp/${component}.zip &>> ${log_file}
+}
+
+systemd_setup() {
+    #Setup service file
+    echo -e "${color}Setting up ${component} Service${nocolor}"
+    cp /home/centos/roboshop-shell/${component}.service /etc/systemd/system/
+
+    #Load the service.
+    echo -e "${color}Load the ${component} service${nocolor}"
+    systemctl daemon-reload
+    
+    #enable and restart the service
+    echo -e "${color}Enable and restart ${component} service${nocolor}"
+    systemctl enable ${component} &>> ${log_file}
+    systemctl restart ${component}
+}
+
+nodejs() {
     echo -e "${color}Disabling the default nodejs version${nocolor}"
     dnf module disable nodejs -y &>> ${log_file}
 
@@ -17,41 +47,13 @@ nodejs() {
     echo -e "${color}Installing the nodejs 18${nocolor}"
     dnf install nodejs -y &>> ${log_file}
 
-    #Add application User
-    echo -e "${color}Added the app user${nocolor}"
-    useradd roboshop &>> ${log_file}
-
-    #setup an app directory.
-    echo -e "${color}Setup app directory${nocolor}"
-    rm -rf ${app_path}
-    mkdir ${app_path} 
-
-
-    #Download the application code 
-    echo -e "${color}Download app code${nocolor}"
-    curl -o /tmp/${component}.zip https://roboshop-artifacts.s3.amazonaws.com/${component}.zip &>> ${log_file}
-
-    #unzip the file
-    echo -e "${color}Unzip the file${nocolor}"
-    cd ${app_path} 
-    unzip /tmp/${component}.zip &>> ${log_file}
+    app_presetup
 
     #download the dependencies.
     echo -e "${color}Downloading dependencies${nocolor}"
     npm install  &>> ${log_file}
 
-    #Setup SystemD Catalogue Service
-    echo -e "${color}Setting up ${component} Service${nocolor}"
-    cp /home/centos/roboshop-shell/${component}.service /etc/systemd/system/
-
-    #Load the service.
-    echo -e "${color}Load the ${component} service${nocolor}"
-    systemctl daemon-reload
-
-    #enable and restart the service
-    echo -e "${color}Enable and restart catalogue service${nocolor}"
-    systemctl enable ${component} &>> ${log_file}
-    systemctl restart ${component}
+    systemd_setup
 }
 
 mongodb-client-setup() {
@@ -69,46 +71,23 @@ mongodb-client-setup() {
 }
 
 golang() {
-    echo -e "${color}setting the hostname${nocolor}"
-    hostnamectl set-hostname ${component}
-
     #install golang
     echo -e "${color}install golang${nocolor}"
     dnf install golang -y &>> ${log_file}
 
-    #create user
-    echo -e "${color}create user${nocolor}"
-    useradd roboshop &>> ${log_file}
-
-    #create app directory
-    echo -e "${color}create app directory${nocolor}"
-    rm -rf ${app_path}
-    mkdir ${app_path} &>> ${log_file}
-
-    #download app code
-    echo -e "${color}download app code${nocolor}"
-    curl -L -o /tmp/${component}.zip https://roboshop-artifacts.s3.amazonaws.com/${component}.zip &>> ${log_file}
-    cd ${app_path} 
-
-    #unzip the folder
-    echo -e "${color}unzip the folder${nocolor}"
-    unzip /tmp/${component}.zip &>> ${log_file}
+    app_presetup
 
     #install dependencies
     echo -e "${color}install dependencies${nocolor}"
-    go mod init dispatch &>> ${log_file}
+    go mod init ${component} &>> ${log_file}
     go get &>> ${log_file}
     go build &>> ${log_file}
 
     #create the service file
-    echo -e "${color}create the ${component}h service file${nocolor}"
+    echo -e "${color}create the ${component} service file${nocolor}"
     cp /home/centos/roboshop-shell/${component}.service /etc/systemd/system/${component}.service &>> ${log_file}
 
-    #load, enable and restart service
-    echo -e "${color}load, enable and restart ${component} service${nocolor}"
-    systemctl daemon-reload
-    systemctl enable ${component} &>> ${log_file}
-    systemctl restart ${component}
+    systemd_setup
 }
 
 nginx() {
@@ -138,47 +117,18 @@ nginx() {
 }
 
 python() {
-    echo -e "${color}setting the hostname${nocolor}"
-    hostnamectl set-hostname ${component}
-
+    
     #install python
     echo -e "${color}install python${nocolor}"
     dnf install python36 gcc python3-devel -y &>> ${log_file}
 
-    #create the user
-    echo -e "${color}create the user${nocolor}"
-    useradd roboshop &>> ${log_file}
-
-    #create the app dir
-    echo -e "${color}create the app dir${nocolor}"
-    rm -rf ${app_path}
-    mkdir ${app_path} 
-
-    #download the app code
-    echo -e "${color}download the app code${nocolor}"
-    curl -L -o /tmp/${component}.zip https://roboshop-artifacts.s3.amazonaws.com/${component}.zip &>> ${log_file}
-    cd ${app_path} 
-
-    #unzip the folder
-    echo -e "${color}unzip the folder${nocolor}"
-    unzip /tmp/${component}.zip &>> ${log_file}
+    app_presetup
 
     #install the dependencies
     echo -e "${color}install the dependencies${nocolor}"
     pip3.6 install -r requirements.txt &>> ${log_file}
 
-    #create the service file
-    echo -e "${color}create the ${component} service file${nocolor}"
-    cp /home/centos/roboshop-shell/${component}.service /etc/systemd/system/${component}.service &>> ${log_file}
-
-    #load the service
-    echo -e "${color}load the ${component} service${nocolor}"
-    systemctl daemon-reload 
-
-    #enable and restart the service
-    echo -e "${color}enable and restart ${component} service${nocolor}"
-    systemctl enable ${component} &>> ${log_file}
-    systemctl restart ${component}
+    systemd_setup
 }
 
 mysql-client() {
@@ -193,52 +143,19 @@ mysql-client() {
 }
 
 maven() {
-    echo -e "${color}setting the hostname${nocolor}"
-    hostnamectl set-hostname ${component}
 
     #Install maven
     echo -e "${color}Install maven${nocolor}"
     dnf install maven -y &>> ${log_file}
 
-    #create user
-    echo -e "${color}create user${nocolor}"
-    useradd roboshop &>> ${log_file}
-
-    #create app dir
-    echo -e "${color}create app dir${nocolor}"
-    rm -rf ${app_path}
-    mkdir ${app_path} &>> ${log_file}
-
-    #download app shipping code
-    echo -e "${color}download app ${component} code${nocolor}"
-    curl -L -o /tmp/${component}.zip https://roboshop-artifacts.s3.amazonaws.com/${component}.zip  &>> ${log_file}
-
-    #unzip the folder
-    echo -e "${color}unzip the folder${nocolor}"
-    cd ${app_path} 
-    unzip /tmp/${component}.zip &>> ${log_file}
+    app_presetup
 
     #install dependencies
     echo -e "${color}install dependencies${nocolor}"
     mvn clean package &>> ${log_file}
     mv target/${component}-1.0.jar ${component}.jar &>> ${log_file}
 
-    #create the shipping service file
-    echo -e "${color}create the ${component} service file${nocolor}"
-    cp /home/centos/roboshop-shell/${component}.service /etc/systemd/system/ &>> ${log_file}
-
-    #load the service
-    echo -e "${color}load the ${component} service${nocolor}"
-    systemctl daemon-reload 
-
-    #enable the service
-    echo -e "${color}enable the ${component} service${nocolor}"
-    systemctl enable ${component} &>> ${log_file}
-
-    #restart the service
-    echo -e "${color}restart the ${component} service${nocolor}"
-    systemctl restart ${component}
-
+    systemd_setup
 }
 
 
