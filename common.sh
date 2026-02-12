@@ -29,7 +29,7 @@ systemd_setup() {
     #Load the service.
     echo -e "${color}Load the ${component} service${nocolor}"
     systemctl daemon-reload
-    
+
     #enable and restart the service
     echo -e "${color}Enable and restart ${component} service${nocolor}"
     systemctl enable ${component} &>> ${log_file}
@@ -156,6 +156,9 @@ maven() {
     mv target/${component}-1.0.jar ${component}.jar &>> ${log_file}
 
     systemd_setup
+
+    mysql-client
+
 }
 
 
