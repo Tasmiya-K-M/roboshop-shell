@@ -15,6 +15,10 @@ app_presetup() {
     echo -e "${color}Download app code${nocolor}"
     curl -o /tmp/${component}.zip https://roboshop-artifacts.s3.amazonaws.com/${component}.zip 
 
+    #create the app directory
+    rm -rf ${app_path}
+    mkdir ${app_path}
+
     #unzip the file
     echo -e "${color}Unzip the file${nocolor}"
     cd ${app_path} 
