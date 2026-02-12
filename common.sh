@@ -9,11 +9,11 @@ app_presetup() {
 
     #Add application User
     echo -e "${color}Added the app user${nocolor}"
-    useradd roboshop 
+    useradd roboshop &>> ${log_file}
 
     #Download the application code 
     echo -e "${color}Download app code${nocolor}"
-    curl -o /tmp/${component}.zip https://roboshop-artifacts.s3.amazonaws.com/${component}.zip 
+    curl -o /tmp/${component}.zip https://roboshop-artifacts.s3.amazonaws.com/${component}.zip &>> ${log_file}
 
     #create the app directory
     rm -rf ${app_path}
@@ -22,7 +22,7 @@ app_presetup() {
     #unzip the file
     echo -e "${color}Unzip the file${nocolor}"
     cd ${app_path} 
-    unzip /tmp/${component}.zip 
+    unzip /tmp/${component}.zip &>> ${log_file}
 }
 
 systemd_setup() {
@@ -36,7 +36,7 @@ systemd_setup() {
 
     #enable and restart the service
     echo -e "${color}Enable and restart ${component} service${nocolor}"
-    systemctl enable ${component} 
+    systemctl enable ${component} &>> ${log_file}
     systemctl restart ${component}
 }
 
@@ -138,25 +138,25 @@ python() {
 mysql-client() {
     #install mysql-client
     echo -e "${color}install mysql-client${nocolor}"
-    dnf install mysql -y 
+    dnf install mysql -y &>> ${log_file}
 
     #load the data
     echo -e "${color}load the data${nocolor}"
-    mysql -h mysql-dev.devopspro789.online -uroot -pRoboShop@1 < ${app_path}/schema/${component}.sql 
+    mysql -h mysql-dev.devopspro789.online -uroot -pRoboShop@1 < ${app_path}/schema/${component}.sql &>> ${log_file}
 }
 
 maven() {
 
     #Install maven
     echo -e "${color}Install maven${nocolor}"
-    dnf install maven -y 
+    dnf install maven -y &>> ${log_file}
 
     app_presetup
 
     #install dependencies
     echo -e "${color}install dependencies${nocolor}"
-    mvn clean package 
-    mv target/${component}-1.0.jar ${component}.jar 
+    mvn clean package &>> ${log_file}
+    mv target/${component}-1.0.jar ${component}.jar &>> ${log_file}
 
     systemd_setup
 
