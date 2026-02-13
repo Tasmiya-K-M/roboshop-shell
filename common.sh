@@ -10,6 +10,7 @@ app_presetup() {
         echo SUCCESS
     else
         echo FAILURE
+    fi
 
     #Add application User
     echo -e "${color}Added the app user${nocolor}"
@@ -18,6 +19,7 @@ app_presetup() {
         echo SUCCESS
     else
         echo FAILURE
+    fi
 
     #Download the application code 
     echo -e "${color}Download app code${nocolor}"
@@ -26,6 +28,7 @@ app_presetup() {
         echo SUCCESS
     else
         echo FAILURE
+    fi
 
     #create the app directory
     echo -e "${color}Create app dir${nocolor}"
@@ -35,6 +38,7 @@ app_presetup() {
         echo SUCCESS
     else
         echo FAILURE
+    fi
 
     #unzip the file
     echo -e "${color}Unzip the file${nocolor}"
@@ -44,6 +48,7 @@ app_presetup() {
         echo SUCCESS
     else
         echo FAILURE
+    fi
 }
 
 systemd_setup() {
@@ -54,6 +59,7 @@ systemd_setup() {
         echo SUCCESS
     else
         echo FAILURE
+    fi
 
     #Load the service.
     echo -e "${color}Load the ${component} service${nocolor}"
@@ -62,6 +68,7 @@ systemd_setup() {
         echo SUCCESS
     else
         echo FAILURE
+    fi
 
     #enable and restart the service
     echo -e "${color}Enable ${component} service${nocolor}"
@@ -70,6 +77,7 @@ systemd_setup() {
         echo SUCCESS
     else
         echo FAILURE
+    fi
 
     echo -e "${color}Restart ${component} service${nocolor}"
     systemctl restart ${component}
@@ -77,6 +85,7 @@ systemd_setup() {
         echo SUCCESS
     else
         echo FAILURE
+    fi
 }
 
 nodejs() {
@@ -168,6 +177,7 @@ python() {
         echo SUCCESS
     else
         echo FAILURE
+    fi
 
     app_presetup
 
@@ -178,6 +188,7 @@ python() {
         echo SUCCESS
     else
         echo FAILURE
+    fi
 
     systemd_setup
 }
