@@ -20,14 +20,12 @@ app_presetup() {
 
     #create the app directory
     rm -rf ${app_path}
-    echo $?
     mkdir ${app_path}
     echo $?
 
     #unzip the file
     echo -e "${color}Unzip the file${nocolor}"
     cd ${app_path} 
-    echo $?
     unzip /tmp/${component}.zip &>> ${log_file}
     echo $?
 }
@@ -137,8 +135,6 @@ python() {
     
     #install python
     echo -e "${color}install python${nocolor}"
-    echo $?
-
     dnf install python36 gcc python3-devel -y &>> ${log_file}
     echo $?
 
