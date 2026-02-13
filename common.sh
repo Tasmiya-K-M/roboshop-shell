@@ -3,52 +3,7 @@ nocolor="\e[0m"
 log_file="/tmp/roboshop.log"
 app_path="/app"
 
-
-
-app_presetup() {
-    echo -e "${color}setting the hostname${nocolor}"
-    hostnamectl set-hostname ${component}
-    if [ $? -eq 0 ] ; then
-        echo SUCCESS
-    else
-        echo FAILURE
-    fi
-
-    #Add application User
-    echo -e "${color}Added the app user${nocolor}"
-    id roboshop &>> ${log_file}
-    if [ $? -eq 1 ] ; then
-        useradd roboshop &>> ${log_file}
-    fi
-    if [ $? -eq 0 ] ; then
-        echo SUCCESS
-    else
-        echo FAILURE
-    fi
-
-    #Download the application code 
-    echo -e "${color}Download app code${nocolor}"
-    curl -o /tmp/${component}.zip https://roboshop-artifacts.s3.amazonaws.com/${component}.zip &>> ${log_file}
-    if [ $? -eq 0 ] ; then
-        echo SUCCESS
-    else
-        echo FAILURE
-    fi
-
-    #create the app directory
-    echo -e "${color}Create app dir${nocolor}"
-    rm -rf ${app_path}
-    mkdir ${app_path}
-    if [ $? -eq 0 ] ; then
-        echo SUCCESS
-    else
-        echo FAILURE
-    fi
-
-    #unzip the file
-    echo -e "${color}Unzip the file${nocolor}"
-    cd ${app_path} 
-    unzip /tmp/${component}.zip &>> ${log_file}
+stat_check() {
     if [ $? -eq 0 ] ; then
         echo SUCCESS
     else
@@ -56,41 +11,57 @@ app_presetup() {
     fi
 }
 
+app_presetup() {
+    echo -e "${color}setting the hostname${nocolor}"
+    hostnamectl set-hostname ${component}
+
+    stat_check
+
+    #Add application User
+    echo -e "${color}Added the app user${nocolor}"
+    id roboshop &>> ${log_file}
+    if [ $? -eq 1 ] ; then
+        useradd roboshop &>> ${log_file}
+    fi
+    stat_check
+
+    #Download the application code 
+    echo -e "${color}Download app code${nocolor}"
+    curl -o /tmp/${component}.zip https://roboshop-artifacts.s3.amazonaws.com/${component}.zip &>> ${log_file}
+    stat_check
+
+    #create the app directory
+    echo -e "${color}Create app dir${nocolor}"
+    rm -rf ${app_path}
+    mkdir ${app_path}
+    stat_check
+
+    #unzip the file
+    echo -e "${color}Unzip the file${nocolor}"
+    cd ${app_path} 
+    unzip /tmp/${component}.zip &>> ${log_file}
+    stat_check
+}
+
 systemd_setup() {
     #Setup service file
     echo -e "${color}Setting up ${component} Service${nocolor}"
     cp /home/centos/roboshop-shell/${component}.service /etc/systemd/system/
-    if [ $? -eq 0 ] ; then
-        echo SUCCESS
-    else
-        echo FAILURE
-    fi
+    stat_check
 
     #Load the service.
     echo -e "${color}Load the ${component} service${nocolor}"
     systemctl daemon-reload
-    if [ $? -eq 0 ] ; then
-        echo SUCCESS
-    else
-        echo FAILURE
-    fi
+    stat_check
 
     #enable and restart the service
     echo -e "${color}Enable ${component} service${nocolor}"
     systemctl enable ${component} &>> ${log_file}
-    if [ $? -eq 0 ] ; then
-        echo SUCCESS
-    else
-        echo FAILURE
-    fi
+    stat_check
 
     echo -e "${color}Restart ${component} service${nocolor}"
     systemctl restart ${component}
-    if [ $? -eq 0 ] ; then
-        echo SUCCESS
-    else
-        echo FAILURE
-    fi
+    stat_check
 }
 
 nodejs() {
@@ -178,22 +149,14 @@ python() {
     #install python
     echo -e "${color}install python${nocolor}"
     dnf install python36 gcc python3-devel -y &>> ${log_file}
-    if [ $? -eq 0 ] ; then
-        echo SUCCESS
-    else
-        echo FAILURE
-    fi
+    stat_check
 
     app_presetup
 
     #install the dependencies
     echo -e "${color}install the dependencies${nocolor}"
     pip3.6 install -r requirements.txt &>> ${log_file}
-    if [ $? -eq 0 ] ; then
-        echo SUCCESS
-    else
-        echo FAILURE
-    fi
+    stat_check
 
     systemd_setup
 }
