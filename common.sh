@@ -6,7 +6,7 @@ app_path="/app"
 app_presetup() {
     echo -e "${color}setting the hostname${nocolor}"
     hostnamectl set-hostname ${component}
-    if [ echo $? -eq 0 ] ; then
+    if [ $? -eq 0 ] ; then
         echo SUCCESS
     else
         echo FAILURE
@@ -15,7 +15,7 @@ app_presetup() {
     #Add application User
     echo -e "${color}Added the app user${nocolor}"
     useradd roboshop &>> ${log_file}
-    if [ echo $? -eq 0 ] ; then
+    if [ $? -eq 0 ] ; then
         echo SUCCESS
     else
         echo FAILURE
@@ -24,7 +24,7 @@ app_presetup() {
     #Download the application code 
     echo -e "${color}Download app code${nocolor}"
     curl -o /tmp/${component}.zip https://roboshop-artifacts.s3.amazonaws.com/${component}.zip &>> ${log_file}
-    if [ echo $? -eq 0 ] ; then
+    if [ $? -eq 0 ] ; then
         echo SUCCESS
     else
         echo FAILURE
@@ -34,7 +34,7 @@ app_presetup() {
     echo -e "${color}Create app dir${nocolor}"
     rm -rf ${app_path}
     mkdir ${app_path}
-    if [ echo $? -eq 0 ] ; then
+    if [ $? -eq 0 ] ; then
         echo SUCCESS
     else
         echo FAILURE
@@ -44,7 +44,7 @@ app_presetup() {
     echo -e "${color}Unzip the file${nocolor}"
     cd ${app_path} 
     unzip /tmp/${component}.zip &>> ${log_file}
-    if [ echo $? -eq 0 ] ; then
+    if [ $? -eq 0 ] ; then
         echo SUCCESS
     else
         echo FAILURE
@@ -55,7 +55,7 @@ systemd_setup() {
     #Setup service file
     echo -e "${color}Setting up ${component} Service${nocolor}"
     cp /home/centos/roboshop-shell/${component}.service /etc/systemd/system/
-    if [ echo $? -eq 0 ] ; then
+    if [ $? -eq 0 ] ; then
         echo SUCCESS
     else
         echo FAILURE
@@ -64,7 +64,7 @@ systemd_setup() {
     #Load the service.
     echo -e "${color}Load the ${component} service${nocolor}"
     systemctl daemon-reload
-    if [ echo $? -eq 0 ] ; then
+    if [ $? -eq 0 ] ; then
         echo SUCCESS
     else
         echo FAILURE
@@ -73,7 +73,7 @@ systemd_setup() {
     #enable and restart the service
     echo -e "${color}Enable ${component} service${nocolor}"
     systemctl enable ${component} &>> ${log_file}
-    if [ echo $? -eq 0 ] ; then
+    if [ $? -eq 0 ] ; then
         echo SUCCESS
     else
         echo FAILURE
@@ -81,7 +81,7 @@ systemd_setup() {
 
     echo -e "${color}Restart ${component} service${nocolor}"
     systemctl restart ${component}
-    if [ echo $? -eq 0 ] ; then
+    if [ $? -eq 0 ] ; then
         echo SUCCESS
     else
         echo FAILURE
@@ -173,7 +173,7 @@ python() {
     #install python
     echo -e "${color}install python${nocolor}"
     dnf install python36 gcc python3-devel -y &>> ${log_file}
-    if [ echo $? -eq 0 ] ; then
+    if [ $? -eq 0 ] ; then
         echo SUCCESS
     else
         echo FAILURE
@@ -184,7 +184,7 @@ python() {
     #install the dependencies
     echo -e "${color}install the dependencies${nocolor}"
     pip3.6 install -r requirements.txt &>> ${log_file}
-    if [ echo $? -eq 0 ] ; then
+    if [ $? -eq 0 ] ; then
         echo SUCCESS
     else
         echo FAILURE
