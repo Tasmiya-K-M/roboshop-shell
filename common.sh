@@ -3,6 +3,8 @@ nocolor="\e[0m"
 log_file="/tmp/roboshop.log"
 app_path="/app"
 
+
+
 app_presetup() {
     echo -e "${color}setting the hostname${nocolor}"
     hostnamectl set-hostname ${component}
@@ -14,7 +16,10 @@ app_presetup() {
 
     #Add application User
     echo -e "${color}Added the app user${nocolor}"
-    useradd roboshop &>> ${log_file}
+    id roboshop &>> ${log_file}
+    if [ $? -eq 1 ] ; then
+        useradd roboshop &>> ${log_file}
+    fi
     if [ $? -eq 0 ] ; then
         echo SUCCESS
     else
