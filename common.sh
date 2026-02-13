@@ -6,38 +6,51 @@ app_path="/app"
 app_presetup() {
     echo -e "${color}setting the hostname${nocolor}"
     hostnamectl set-hostname ${component}
+    echo $?
 
     #Add application User
     echo -e "${color}Added the app user${nocolor}"
     useradd roboshop &>> ${log_file}
+    echo $?
 
     #Download the application code 
     echo -e "${color}Download app code${nocolor}"
     curl -o /tmp/${component}.zip https://roboshop-artifacts.s3.amazonaws.com/${component}.zip &>> ${log_file}
+    echo $?
 
     #create the app directory
     rm -rf ${app_path}
+    echo $?
     mkdir ${app_path}
+    echo $?
 
     #unzip the file
     echo -e "${color}Unzip the file${nocolor}"
     cd ${app_path} 
+    echo $?
     unzip /tmp/${component}.zip &>> ${log_file}
+    echo $?
 }
 
 systemd_setup() {
     #Setup service file
     echo -e "${color}Setting up ${component} Service${nocolor}"
     cp /home/centos/roboshop-shell/${component}.service /etc/systemd/system/
+    echo $?
 
     #Load the service.
     echo -e "${color}Load the ${component} service${nocolor}"
     systemctl daemon-reload
+    echo $?
 
     #enable and restart the service
-    echo -e "${color}Enable and restart ${component} service${nocolor}"
+    echo -e "${color}Enable ${component} service${nocolor}"
     systemctl enable ${component} &>> ${log_file}
+    echo $?
+
+    echo -e "${color}Restart ${component} service${nocolor}"
     systemctl restart ${component}
+    echo $?
 }
 
 nodejs() {
@@ -124,13 +137,17 @@ python() {
     
     #install python
     echo -e "${color}install python${nocolor}"
+    echo $?
+
     dnf install python36 gcc python3-devel -y &>> ${log_file}
+    echo $?
 
     app_presetup
 
     #install the dependencies
     echo -e "${color}install the dependencies${nocolor}"
     pip3.6 install -r requirements.txt &>> ${log_file}
+    echo $?
 
     systemd_setup
 }
