@@ -22,6 +22,7 @@ app_presetup() {
     echo -e "${color}Create app dir${nocolor}"
     rm -rf ${app_path}
     mkdir ${app_path}
+    echo $?
 
     #unzip the file
     echo -e "${color}Unzip the file${nocolor}"
