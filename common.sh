@@ -4,7 +4,7 @@ log_file="/tmp/roboshop.log"
 app_path="/app"
 
 stat_check() {
-    if [ $? -eq 0 ] ; then
+    if [ $1 -eq 0 ] ; then
         echo SUCCESS
     else
         echo FAILURE
@@ -23,7 +23,7 @@ app_presetup() {
     if [ $? -eq 1 ] ; then
         useradd roboshop &>> ${log_file}
     fi
-    stat_check
+    stat_check $?
 
     #Download the application code 
     echo -e "${color}Download app code${nocolor}"
