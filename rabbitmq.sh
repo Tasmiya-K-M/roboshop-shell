@@ -27,8 +27,14 @@ stat_check $?
 
 #add rmq user
 echo -e "${color}add rmq user${nocolor}"
-rabbitmqctl add_user roboshop $1 &>> ${log_file}
-stat_check $?
+sudo rabbitmqctl list_users | grep roboshop
+if [ $? -ne 0 ]; then
+    rabbitmqctl add_user roboshop $1 &>> ${log_file}
+    echo SUCCESS
+else
+    echo FAILURE
+    exit 1
+fi
 
 #set the permissions
 echo -e "${color}set the permissions${nocolor}"
