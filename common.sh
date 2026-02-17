@@ -211,7 +211,7 @@ maven() {
 
     systemd_setup
 
-    mysql-client $mysql_client_password
+    mysql-client 
 
 }
 
