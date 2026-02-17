@@ -1,27 +1,35 @@
-echo -e "\e[33msetting the hostname\e[0m"
+source common.sh
+
+echo -e "${color}setting the hostname${nocolor}"
 hostnamectl set-hostname mysql
+stat_check $?
 
 # Disable the default mysql version
-echo -e "\e[33mDisable the default mysql version\e[0m"
-dnf module disable mysql -y &>> /tmp/roboshop.log
+echo -e "${color}Disable the default mysql version${nocolor}"
+dnf module disable mysql -y &>> ${log_file}
+stat_check $?
 
 #create the repo file
-echo -e "\e[33mcreate the repo file\e[0m"
-cp /home/centos/learn-shell/mysql.repo /etc/yum.repos.d/
+echo -e "${color}create the repo file${nocolor}"
+cp /home/centos/roboshop-shell/mysql.repo /etc/yum.repos.d/
+stat_check $?
 
 #Install the mysql server
-echo -e "\e[33mInstall the mysql server\e[0m"
-dnf install mysql-community-server -y &>> /tmp/roboshop.log
+echo -e "${color}Install the mysql server${nocolor}"
+dnf install mysql-community-server -y &>> ${log_file}
+stat_check $?
 
 #enable the mysql
-echo -e "\e[33menable the mysql\e[0m"
-systemctl enable mysqld &>> /tmp/roboshop.log
+echo -e "${color}enable the mysql${nocolor}"
+systemctl enable mysqld &>> ${log_file}
+stat_check $?
 
 #restart the mysql
-echo -e "\e[33mrestart the mysql\e[0m"
-systemctl restart mysqld  &>> /tmp/roboshop.log
+echo -e "${color}restart the mysql${nocolor}"
+systemctl restart mysqld  &>> ${log_file}
+stat_check $?
 
 #change the default password
-echo -e "\e[33mchange the default password\e[0m"
+echo -e "${color}change the default password${nocolor}"
 mysql_secure_installation --set-root-pass $1
-
+stat_check $?

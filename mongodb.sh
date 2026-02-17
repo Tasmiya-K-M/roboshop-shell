@@ -1,17 +1,25 @@
-echo -e "\e[33msetting the hostname\e[0m"
-hostnamectl set-hostname mongodb
+source common.sh
 
-echo -e "\e[33mSetuping the MongoDB repo file\e[0m"
-cp  mongo.repo /etc/yum.repos.d/ &>> /tmp/roboshop.log
+echo -e "${color}setting the hostname${nocolor}"
+hostnamectl set-hostname mongodb 
+stat_check $?
 
-echo -e "\e[33mInstalling MongoDB\e[0m"
-dnf install mongodb-org -y &>> /tmp/roboshop.log
+echo -e "${color}Setuping the MongoDB repo file${nocolor}"
+cp  /home/centos/roboshop-shell/mongo.repo /etc/yum.repos.d/ &>> ${log_file}
+stat_check $?
 
-echo -e "\e[33mEnabling MongoDB\e[0m"
-systemctl enable mongod &>> /tmp/roboshop.log
+echo -e "${color}Installing MongoDB${nocolor}"
+dnf install mongodb-org -y &>> ${log_file}
+stat_check $?
 
-echo -e "\e[33mUpdating listen address\e[0m"
+echo -e "${color}Enabling MongoDB${nocolor}"
+systemctl enable mongod &>> ${log_file}
+stat_check $?
+
+echo -e "${color}Updating listen address${nocolor}"
 sed -i  "s/127.0.0.1/0.0.0.0/" /etc/mongod.conf 
+stat_check $?
 
-echo -e "\e[33mRestarting MongoDB\e[0m"
-systemctl restart mongod &>> /tmp/roboshop.log
+echo -e "${color}Restarting MongoDB${nocolor}"
+systemctl restart mongod &>> ${log_file}
+stat_check $?
