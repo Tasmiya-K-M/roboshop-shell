@@ -30,10 +30,7 @@ echo -e "${color}add rmq user${nocolor}"
 sudo rabbitmqctl list_users | grep roboshop &>> ${log_file}
 if [ $? -ne 0 ]; then
     rabbitmqctl add_user roboshop $1 &>> ${log_file}
-    echo SUCCESS
-else
-    echo FAILURE
-    exit 1
+    stat_check $?
 fi
 
 #set the permissions
