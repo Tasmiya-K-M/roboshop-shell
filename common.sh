@@ -190,7 +190,7 @@ mysql-client() {
 
     #load the data
     echo -e "${color}load the data${nocolor}"
-    mysql -h mysql-dev.devopspro789.online -uroot -p{$1} < ${app_path}/schema/${component}.sql &>> ${log_file}
+    mysql -h mysql-dev.devopspro789.online -uroot -p${mysql_client_password} < ${app_path}/schema/${component}.sql &>> ${log_file}
     stat_check $?
 }
 
