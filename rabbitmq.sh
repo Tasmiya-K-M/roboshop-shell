@@ -28,7 +28,7 @@ stat_check $?
 #add rmq user
 echo -e "${color}add rmq user${nocolor}"
 sudo rabbitmqctl list_users | grep roboshop
-if [ $? -ne 0 ]; then
+if [ $? -eq 1 ]; then
     rabbitmqctl add_user roboshop $1 &>> ${log_file}
     echo SUCCESS
 else
