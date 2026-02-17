@@ -23,5 +23,5 @@ systemctl restart mysqld  &>> /tmp/roboshop.log
 
 #change the default password
 echo -e "\e[33mchange the default password\e[0m"
-mysql_secure_installation --set-root-pass RoboShop@1
+mysql_secure_installation --set-root-pass $1
 
