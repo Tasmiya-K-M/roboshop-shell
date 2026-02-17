@@ -20,7 +20,7 @@ systemctl restart rabbitmq-server &>> /tmp/roboshop.log
 
 #add rmq user
 echo -e "\e[33madd rmq user\e[0m"
-rabbitmqctl add_user roboshop rabbitmq_app_password &>> /tmp/roboshop.log
+rabbitmqctl add_user roboshop $1 &>> /tmp/roboshop.log
 
 #set the permissions
 echo -e "\e[33mset the permissions\e[0m"
